@@ -1,7 +1,10 @@
 import random
-import BChain_WordList as bwords
+import application.BChain_WordList as bwords
 import pandas as pd
+from flask import Flask, redirect, request, url_for,render_template, Response, jsonify
+from application import app
 
+@app.route('/', methods=['GET','POST']) 
 def mnemonic_generator():
     seedphrase_words = []
 
