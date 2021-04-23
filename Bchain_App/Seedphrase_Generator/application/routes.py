@@ -7,11 +7,11 @@ import requests
 
 @app.route('/', methods=['GET','POST']) 
 def word_positioner():
-    sp = requests.get('http://WordList_Reader:5001/mnemonic_generator').json()
-    #indeces = requests.get('http://WordList_Parser:5000/random_sequence').json()
+    sp = requests.get('http://WordList_Reader:5001/mnemonic_generator').text#.json()
+    indeces = requests.get('http://WordList_Parser:5002/random_sequence').text
 
-    #df1 = pd.read_json(sp,orient='columns')
-    #df2 = pd.read_json(indeces,orient='columns').sort_index()
-    #df = pd.merge(df1,df2,how='right',left_index=True, right_index=True).sort_values(by='sp_order')
-    return sp #df.to_json()
+    df1 = pd.read_json(sp,orient='columns')
+    df2 = pd.read_json(indeces,orient='columns').sort_index()
+    df = pd.merge(df1,df2,how='right',left_index=True, right_index=True).sort_values(by='sp_order')
+    return df.to_json() #sp + '<br>' + df1 #df.to_json()
 

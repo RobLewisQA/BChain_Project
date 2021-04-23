@@ -29,6 +29,33 @@ services:
       published: 5002
       protocol: tcp
 
+  Password_Generator:
+    container_name: password_generator
+    image: password_generator:latest
+    build: ./Password_Generator
+    ports:
+    - target: 5003
+      published: 5003
+      protocol: tcp
+  
+  Username_Generator:
+    container_name: username_generator
+    image: username_generator:latest
+    build: ./Username_Generator
+    ports:
+    - target: 5004
+      published: 5004
+      protocol: tcp 
+  
+  Pandas_jsonReader:
+    container_name: pandas_jsonreader
+    image: pandas_jsonreader:latest
+    build: ./Pandas_jsonReader
+    ports:
+    - target: 5005
+      published: 5005
+      protocol: tcp
+
   nginx:
     image: nginx:latest
     ports:
