@@ -1,17 +1,19 @@
-import Seedphrase_Generator as sp
-import Username_Generator as ug
 import pandas as pd
 import random
 from os import getenv
+from flask import Flask, redirect, request, url_for,render_template, Response, jsonify
+from application import app
+import requests
 
-#df = pd.DataFrame(columns= ['username','password','mnemonic'])
-
+@app.route('/json_parser', methods=['GET']) 
 def json_parser():
     df = pd.DataFrame(columns= ['username','password','mnemonic'])
-    df_words = pd.read_json(sp.word_positioner(),orient='columns').sort_values(by='sp_order')
-    df_usnpwd = pd.read_json(ug.usn_pwd())
+    w_positioner = requests.get('http://Seedphrase_Generator:5000/').text
+    usn_pwd = requests.get('http://Username_Generator:5004/').text
+    df_words = pd.read_json(w_positioner,orient='columns').sort_values(by='sp_order')
+    df_usnpwd = pd.read_json(usn_pwd)
     try:
-        user_name = df_usnpwd.username[0] + str(random.randint(1000000000, 9999999999))
+        user_name = usn_pwd[0] + str(random.randint(1000000000, 9999999999))
     except:
         user_name = str(random.randint(100000000000000, 999999999999999))
     print(len(user_name))
