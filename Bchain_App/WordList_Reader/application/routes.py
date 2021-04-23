@@ -4,7 +4,7 @@ import pandas as pd
 from flask import Flask, redirect, request, url_for,render_template, Response, jsonify
 from application import app
 
-@app.route('/', methods=['GET','POST']) 
+@app.route('/mnemonic_generator', methods=['GET']) 
 def mnemonic_generator():
     seedphrase_words = []
 
