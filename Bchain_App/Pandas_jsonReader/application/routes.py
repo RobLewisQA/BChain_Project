@@ -4,8 +4,9 @@ from os import getenv
 from flask import Flask, redirect, request, url_for,render_template, Response, jsonify
 from application import app
 import requests
+import json
 
-@app.route('/json_parser', methods=['GET']) 
+@app.route('/json_parser', methods=['GET','POST']) 
 def json_parser():
     df = pd.DataFrame(columns= ['username','password','mnemonic'])
     w_positioner = requests.get('http://Seedphrase_Generator:5000/').text
@@ -27,7 +28,9 @@ def json_parser():
                 seedphrase = seedphrase + w + '_'
             df_usnpwd['mnemonic'] = seedphrase
             df = df.append(df_usnpwd,ignore_index=True)
-            return df.to_html()#.to_json()
+            df_json = df.to_json(orient='index')
+            requests.post("http://Database:5006/database_router", data = df_json)#localhost:5006/database_router
+            return df_json#df.to_html()#.to_json()
         else:
             return 'Aww shucks! That username was too long. Try another one with fewer characters'
     else:
