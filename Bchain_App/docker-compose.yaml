@@ -45,7 +45,16 @@ services:
     ports:
     - target: 5004
       published: 5004
-      protocol: tcp 
+      protocol: tcp
+      
+  Database:
+    container_name: database
+    image: database:latest
+    build: ./Database
+    ports:
+    - target: 5006
+      published: 5006
+      protocol: tcp
   
   Pandas_jsonReader:
     container_name: pandas_jsonreader
