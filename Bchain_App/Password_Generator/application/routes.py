@@ -1,6 +1,9 @@
 import random
 import pandas as pd
+from flask import Flask, redirect, request, url_for,render_template, Response, jsonify
+from application import app
 
+@app.route('/password_engine', methods=['GET']) 
 def password_engine():
     chars = ['a','b','c','d','e','f',
              'g','h','i','j','k','l',
