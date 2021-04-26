@@ -36,7 +36,7 @@ def json_parser():
                 df = df.append(df_usnpwd,ignore_index=True)
                 df_json = df.to_json(orient='index')
                 requests.post("http://Database:5006/database_router", data = df_json)#localhost:5006/database_router
-                return df.to_html()#.to_json()
+                return pd.concat([df[['username','password']],df.mnemonic.str.split('_',expand=True)],axis=1).to_html()#.to_json()
             else:
                 return 'Aww shucks! That username was too long. Try another one with fewer characters'
         else:
