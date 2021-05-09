@@ -65,6 +65,15 @@ services:
       published: 5005
       protocol: tcp
 
+  Login_Frontend:
+    container_name: login_frontend
+    image: login_frontend:latest
+    build: ./Login_Frontend
+    ports:
+    - target: 5007
+      published: 5007
+      protocol: tcp  
+
   nginx:
     image: nginx:latest
     ports:

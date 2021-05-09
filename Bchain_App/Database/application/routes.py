@@ -19,10 +19,10 @@ def database_router():
         df.to_csv('data.csv')
 
         #return str(type(json.dumps(raw)))
-        return df.to_html()
+        return df.to_json()
     else:
         try:
-            return pd.read_csv('data.csv').iloc[:,1:].to_html()
+            return pd.read_csv('data.csv').iloc[:,1:].to_json()
         except:
             return "no data"
 
