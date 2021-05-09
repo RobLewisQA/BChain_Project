@@ -1,0 +1,42 @@
+- name: Deploy to EKS
+  hosts: all
+  become: true
+
+  tasks:
+  - name: Deploy WordList_Reader Service
+    shell: |
+      kubectl apply -f wordlist_reader.yaml
+  
+  - name: Deploy WordList_Parser Service
+    shell: | 
+      kubectl apply -f wordlist_parser.yaml
+  
+  - name: Deploy Username_Generator Service
+    shell: |
+      kubectl apply -f username_generator.yaml
+
+  - name: Deploy Password_Generator Service
+    shell: |
+      kubectl apply -f password_generator.yaml
+
+  - name: Deploy Seedphrase_Generator Service
+    shell: |
+      kubectl apply -f seedphrase_generator.yaml
+
+  - name: Deploy Pandas_jsonReader Service
+    shell: |
+      kubectl apply -f pandas_jsonreader.yaml
+
+  - name: Deploy Database Service
+    shell: |
+      kubectl apply -f database.yaml
+
+  - name: Deploy Login_Frontend Service
+    shell: |
+      kubectl apply -f login_frontend.yaml
+
+  - name: Deploy Nginx Service
+    shell: |
+      kubectl apply -f ./nginx/service.yaml
+      kubectl apply -f ./nginx/deployment.yaml
+      kubectl apply -f ./nginx/configmap.yaml 
