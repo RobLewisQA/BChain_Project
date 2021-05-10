@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wordlist_reader
+  name: wordlist-reader
   labels:
-    app: wordlist_reader
+    app: wordlist-reader
 
 spec:
   selector:
     matchLabels:
-      app: wordlist_reader
+      app: wordlist-reader
   replicas: 2
 
   template:
     metadata:
-      name: wordlist_reader
+      name: wordlist-reader
       labels:
-        app: wordlist_reader
+        app: wordlist-reader
     spec:
       containers:
-      - name: wordlist_reader
+      - name: wordlist-reader
         image: roblewisqa/wordlist_reader:latest
         imagePullPolicy: Always
         ports:
@@ -28,10 +28,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: wordlist_reader
+  name: wordlist-reader
 spec:
   selector:
-    app: wordlist_reader
+    app: wordlist-reader
   ports:
   - port: 5001
     targetPort: 5001

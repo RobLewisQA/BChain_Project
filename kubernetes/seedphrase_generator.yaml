@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: seedphrase_generator
+  name: seedphrase-generator
   labels:
-    app: seedphrase_generator
+    app: seedphrase-generator
 
 spec:
   selector:
     matchLabels:
-      app: seedphrase_generator
+      app: seedphrase-generator
   replicas: 2
 
   template:
     metadata:
-      name: seedphrase_generator
+      name: seedphrase-generator
       labels:
-        app: seedphrase_generator
+        app: seedphrase-generator
     spec:
       containers:
-      - name: seedphrase_generator
+      - name: seedphrase-generator
         image: roblewisqa/seedphrase_generator:latest
         imagePullPolicy: Always
         ports:
@@ -28,10 +28,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: seedphrase_generator
+  name: seedphrase-generator
 spec:
   selector:
-    app: seedphrase_generator
+    app: seedphrase-generator
   ports:
   - port: 5000
     targetPort: 5000

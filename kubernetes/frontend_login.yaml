@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend_login
+  name: frontend-login
   labels:
-    app: frontend_login
+    app: frontend-login
 
 spec:
   selector:
     matchLabels:
-      app: frontend_login
+      app: frontend-login
   replicas: 2
 
   template:
     metadata:
-      name: frontend_login
+      name: frontend-login
       labels:
-        app: frontend_login
+        app: frontend-login
     spec:
       containers:
-      - name: frontend_login
+      - name: frontend-login
         image: roblewisqa/frontend_login:latest
         imagePullPolicy: Always
         ports:
@@ -28,10 +28,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend_login
+  name: frontend-login
 spec:
   selector:
-    app: frontend_login
+    app: frontend-login
   ports:
   - port: 5007
     targetPort: 5007

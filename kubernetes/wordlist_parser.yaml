@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wordlist_parser
+  name: wordlist-parser
   labels:
-    app: wordlist_parser
+    app: wordlist-parser
 
 spec:
   selector:
     matchLabels:
-      app: wordlist_parser
+      app: wordlist-parser
   replicas: 2
 
   template:
     metadata:
-      name: wordlist_parser
+      name: wordlist-parser
       labels:
-        app: wordlist_parser
+        app: wordlist-parser
     spec:
       containers:
-      - name: wordlist_parser
+      - name: wordlist-parser
         image: roblewisqa/wordlist_parser:latest
         imagePullPolicy: Always
         ports:
@@ -28,10 +28,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: wordlist_parser
+  name: wordlist-parser
 spec:
   selector:
-    app: wordlist_parser
+    app: wordlist-parser
   ports:
   - port: 5002
     targetPort: 5002

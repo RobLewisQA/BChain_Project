@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pandas_jsonreader
+  name: pandas-jsonreader
   labels:
-    app: pandas_jsonreader
+    app: pandas-jsonreader
 
 spec:
   selector:
     matchLabels:
-      app: pandas_jsonreader
+      app: pandas-jsonreader
   replicas: 2
 
   template:
     metadata:
-      name: pandas_jsonreader
+      name: pandas-jsonreader
       labels:
-        app: pandas_jsonreader
+        app: pandas-jsonreader
     spec:
       containers:
-      - name: pandas_jsonreader
+      - name: pandas-jsonreader
         image: roblewisqa/pandas_jsonreader:latest
         imagePullPolicy: Always
         ports:
@@ -28,10 +28,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: pandas_jsonreader
+  name: pandas-jsonreader
 spec:
   selector:
-    app: pandas_jsonreader
+    app: pandas-jsonreader
   ports:
   - port: 5005
     targetPort: 5005
