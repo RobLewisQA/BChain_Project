@@ -9,7 +9,7 @@ spec:
   selector:
     matchLabels:
       app: username-generator
-  replicas: 2
+  replicas: 1
 
   template:
     metadata:
@@ -18,7 +18,7 @@ spec:
         app: username-generator
     spec:
       containers:
-      - name: username_generator
+      - name: username-generator
         image: roblewisqa/username_generator:latest
         imagePullPolicy: Always
         ports:
