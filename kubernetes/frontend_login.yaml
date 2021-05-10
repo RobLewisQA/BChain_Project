@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend_login
+  labels:
+    app: frontend_login
+
+spec:
+  selector:
+    matchLabels:
+      app: frontend_login
+  replicas: 2
+
+  template:
+    metadata:
+      name: frontend_login
+      labels:
+        app: frontend_login
+    spec:
+      containers:
+      - name: frontend_login
+        image: roblewisqa/frontend_login:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5007
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend_login
+spec:
+  selector:
+    app: frontend_login
+  ports:
+  - port: 5007
+    targetPort: 5007
+    protocol: TCP
+  type: ClusterIP
