@@ -73,8 +73,8 @@ output "availability_zones" {
 ##
 #######################
 
-resource "aws_eks_cluster" "bchain_cluster" {
-    name        = "bchain_cluster"
+resource "aws_eks_cluster" "bchain-cluster" {
+    name        = "bchain-cluster"
     role_arn    = aws_iam_role.eks_cluster_role.arn
     
     vpc_config  {
@@ -120,9 +120,9 @@ resource "aws_iam_role_policy_attachment" "AmazonEKSServicePolicy" {
 #######################
 
 
-resource "aws_eks_node_group" "bchain_node_group" {
-    cluster_name    = "bchain_cluster"
-    node_group_name = "bchain_node_group"
+resource "aws_eks_node_group" "bchain-node-group" {
+    cluster_name    = "bchain-cluster"
+    node_group_name = "bchain-node-group"
     node_role_arn   = aws_iam_role.eks_worker_node_group_role.arn
     subnet_ids      = [aws_subnet.app_subnets[0].id,aws_subnet.app_subnets[1].id,aws_subnet.app_subnets[2].id] #data.terraform_remote_state.app_network.outputs.subnet_ids
 
