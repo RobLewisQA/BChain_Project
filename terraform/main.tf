@@ -1,3 +1,9 @@
+provider "aws" {
+   region = "eu-west-1" #var.region
+   version = "~> 2.7"
+   access_key = "AKIASJCMMSQA3AS73T4F" #var.access_key
+   secret_key = "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" #var.secret_key
+}
 #######################
 ##
 ###  VPC
@@ -73,13 +79,12 @@ output "availability_zones" {
 ##
 #######################
 
-resource "aws_eks_cluster" "bchain-cluster" {
-    name        = "bchain-cluster"
+resource "aws_eks_cluster" "sales-order-system-eks-cluster" {
+    name        = "eks-cluster"
     role_arn    = aws_iam_role.eks_cluster_role.arn
     
     vpc_config  {
-        #subnet_ids = data.terraform_remote_state.app_vpc.outputs.subnet_ids
-        subnet_ids = [aws_subnet.app_subnets[0].id,aws_subnet.app_subnets[1].id,aws_subnet.app_subnets[2].id] #data.terraform_remote_state.vpc_main.outputs.subnet_ids
+        subnet_ids = [aws_subnet.app_subnets[0].id,aws_subnet.app_subnets[1].id,aws_subnet.app_subnets[2].id]
     }
 }
 
@@ -102,16 +107,15 @@ resource "aws_iam_role" "eks_cluster_role" {
     POLICY
 }
 
-resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy" {
+resource "aws_iam_role_policy_attachment" "sales-order-system-AmazonEKSClusterPolicy" {
     policy_arn  = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
     role        = aws_iam_role.eks_cluster_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "AmazonEKSServicePolicy" {
+resource "aws_iam_role_policy_attachment" "sales-order-system-AmazonEKSServicePolicy" {
     policy_arn  = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
     role        = aws_iam_role.eks_cluster_role.name
 }
-
 
 #######################
 ##
@@ -119,12 +123,11 @@ resource "aws_iam_role_policy_attachment" "AmazonEKSServicePolicy" {
 ##
 #######################
 
-
-resource "aws_eks_node_group" "bchain-node-group" {
-    cluster_name    = "bchain-cluster"
-    node_group_name = "bchain-node-group"
+resource "aws_eks_node_group" "sales_order_system_aws_eks_node_group" {
+    cluster_name    = "eks-cluster"
+    node_group_name = "eks-worker-node-group"
     node_role_arn   = aws_iam_role.eks_worker_node_group_role.arn
-    subnet_ids      = [aws_subnet.app_subnets[0].id,aws_subnet.app_subnets[1].id,aws_subnet.app_subnets[2].id] #data.terraform_remote_state.app_network.outputs.subnet_ids
+    subnet_ids      = [aws_subnet.app_subnets[0].id,aws_subnet.app_subnets[1]]
 
     scaling_config {
         desired_size    = 2
@@ -150,17 +153,17 @@ resource "aws_iam_role" "eks_worker_node_group_role" {
     })
 }
 
-resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {
+resource "aws_iam_role_policy_attachment" "sales-order-system-AmazonEKSWorkerNodePolicy" {
     policy_arn  = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
     role        = aws_iam_role.eks_worker_node_group_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "AmazonEKS_CNI_Policy" {
+resource "aws_iam_role_policy_attachment" "sales-order-system-AmazonEKS_CNI_Policy" {
     policy_arn  = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
     role        = aws_iam_role.eks_worker_node_group_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly" {
+resource "aws_iam_role_policy_attachment" "sales-order-system-AmazonEC2ContainerRegistryReadOnly" {
     policy_arn  = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
     role        = aws_iam_role.eks_worker_node_group_role.name
 }
