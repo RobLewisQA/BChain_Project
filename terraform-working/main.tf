@@ -1,3 +1,16 @@
+provider "aws" {
+   region     = "eu-west-1"
+   version    = "~> 2.7"
+   #access_key = var.access_key
+   #secret_key = var.secret_key
+   shared_credentials_file = "~/.aws/credentials"
+}
+
+variable "access_key" {
+}
+variable "secret_key" {
+}
+
 ###############
 # vpc
 ###############
@@ -153,11 +166,12 @@ resource "aws_eks_node_group" "node" {
   node_group_name = "node_group"
   node_role_arn   = aws_iam_role.eks_nodes.arn
   subnet_ids      = [aws_subnet.app_subnets[0].id,aws_subnet.app_subnets[1].id]
+  instance_types  = ["t2.micro"]
 
   scaling_config {
-    desired_size = 2
-    max_size     = 2
-    min_size     = 2
+    desired_size = 3
+    max_size     = 3
+    min_size     = 3
   }
   depends_on = [
     aws_iam_role_policy_attachment.AmazonEKSWorkerNodePolicy,
