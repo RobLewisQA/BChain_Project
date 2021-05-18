@@ -4,8 +4,8 @@ version: "3.8"
 services:
   Seedphrase_Generator:
     container_name: seedphrase_generator
-    image: seedphrase_generator:latest
-    build: ./Seedphrase_Generator
+    image: roblewisqa/seedphrase_generator:latest
+    build: ./app/Seedphrase_Generator
     ports:
     - target: 5000
       published: 5000
@@ -13,8 +13,8 @@ services:
 # creating a docker container for random_numbers with image referencing Docker Hub       
   WordList_Reader:
     container_name: wordlist_reader
-    image: wordlist_reader:latest
-    build: ./WordList_Reader
+    image: roblewisqa/wordlist_reader:latest
+    build: ./app/WordList_Reader
     ports:
     - target: 5001
       published: 5001
@@ -22,8 +22,8 @@ services:
 
   Wordlist_Parser:
     container_name: wordlist_parser
-    image: wordlist_parser:latest
-    build: ./WordList_Parser
+    image: roblewisqa/wordlist_parser:latest
+    build: ./app/WordList_Parser
     ports:
     - target: 5002
       published: 5002
@@ -31,8 +31,8 @@ services:
 
   Password_Generator:
     container_name: password_generator
-    image: password_generator:latest
-    build: ./Password_Generator
+    image: roblewisqa/password_generator:latest
+    build: ./app/Password_Generator
     ports:
     - target: 5003
       published: 5003
@@ -40,8 +40,8 @@ services:
   
   Username_Generator:
     container_name: username_generator
-    image: username_generator:latest
-    build: ./Username_Generator
+    image: roblewisqa/username_generator:latest
+    build: ./app/Username_Generator
     ports:
     - target: 5004
       published: 5004
@@ -49,8 +49,8 @@ services:
       
   Database:
     container_name: database
-    image: database:latest
-    build: ./Database
+    image: roblewisqa/database:latest
+    build: ./app/Database
     ports:
     - target: 5006
       published: 5006
@@ -58,8 +58,8 @@ services:
   
   Pandas_jsonReader:
     container_name: pandas_jsonreader
-    image: pandas_jsonreader:latest
-    build: ./Pandas_jsonReader
+    image: roblewisqa/pandas_jsonreader:latest
+    build: ./app/Pandas_jsonReader
     ports:
     - target: 5005
       published: 5005
@@ -67,8 +67,8 @@ services:
 
   Login_Frontend:
     container_name: login_frontend
-    image: login_frontend:latest
-    build: ./Login_Frontend
+    image: roblewisqa/login_frontend:latest
+    build: ./app/Login_Frontend
     ports:
     - target: 5007
       published: 5007
@@ -82,5 +82,5 @@ services:
       protocol: tcp
     volumes:
     - type: bind
-      source: ./nginx/nginx.conf
+      source: ./app/nginx/nginx.conf
       target: /etc/nginx/nginx.conf
