@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pandas_jsonreader
+  labels:
+    app: pandas_jsonreader
+
+spec:
+  selector:
+    matchLabels:
+      app: pandas_jsonreader
+  replicas: 2
+
+  template:
+    metadata:
+      name: pandas_jsonreader
+      labels:
+        app: pandas_jsonreader
+    spec:
+      containers:
+      - name: pandas_jsonreader
+        image: roblewisqa/pandas_jsonreader:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5005
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pandas_jsonreader
+spec:
+  selector:
+    app: pandas_jsonreader
+  ports:
+  - port: 5005
+    targetPort: 5005
+    protocol: TCP
+  type: ClusterIP

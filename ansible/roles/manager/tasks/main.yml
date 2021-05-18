@@ -1,0 +1,8 @@
+---
+# tasks file for manager
+
+#- #name: Init a new cluster with default parameters
+  #become: true
+  #community.docker.docker_swarm:
+  #  state: present
+  #register: swarm_data
