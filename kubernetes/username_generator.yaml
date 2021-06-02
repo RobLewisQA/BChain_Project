@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: username_generator
+  name: username-generator
   labels:
-    app: username_generator
+    app: username-generator
 
 spec:
   selector:
     matchLabels:
-      app: username_generator
-  replicas: 2
+      app: username-generator
+  replicas: 1
 
   template:
     metadata:
-      name: username_generator
+      name: username-generator
       labels:
-        app: username_generator
+        app: username-generator
     spec:
       containers:
-      - name: username_generator
+      - name: username-generator
         image: roblewisqa/username_generator:latest
         imagePullPolicy: Always
         ports:
@@ -28,10 +28,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: username_generator
+  name: username-generator
 spec:
   selector:
-    app: username_generator
+    app: username-generator
   ports:
   - port: 5004
     targetPort: 5004
