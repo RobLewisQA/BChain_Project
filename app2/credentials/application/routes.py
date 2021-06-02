@@ -14,15 +14,15 @@ def database():
         except:
             current_data = pd.DataFrame(columns=['private_key_hashed','public_key'])
         
-        #raw = request.data.decode('UTF-8')
         request_data = request.json
-      #response = requests.get('http://frontend:5003/posted').text
-        hashed_pk = request_data["hashed_private_key"]#response.split(" ")[0]
+        hashed_pk = request_data["private_key"]
         pubkey = request_data['public_key']
-        #content = str(raw)
-        df = current_data.append([hashed_pk,pubkey])
-        df.to_csv('accounts_credentials.csv')
-        return df.to_json()
+        new_data = pd.DataFrame([hashed_pk,pubkey]).T
+        new_data.columns = current_data.columns
+        df = current_data.append(new_data)
+
+        df.to_csv('accounts_credentials.csv',index=False)
+        return "" #df.to_json()
     
     elif request.method == 'GET':
         try:

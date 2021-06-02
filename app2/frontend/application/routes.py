@@ -3,6 +3,7 @@ from flask import Flask, redirect, request, url_for,render_template, Response, j
 from application import app
 import requests
 import hashlib
+import json
 
 @app.route('/') 
 @app.route('/home') 
@@ -17,7 +18,8 @@ def login():
 def signup():
     keypair = requests.get('http://keypair-generator:5001/keys_generator').json()
 
-    data = {"hashed_private_key": hashlib.sha256(keypair['private_key'].encode()).hexdigest(), "public_key":keypair['private_key']}
+    #data = {"hashed_private_key": hashlib.sha256(keypair['private_key'].encode()).hexdigest(), "public_key":keypair['private_key']}
+    data = {"private_key": keypair['private_key'], "public_key":keypair['public_key']}
     requests.post('http://credentials:5002/accounts_database', json = data)
     
     return pd.DataFrame.from_dict(keypair,orient='index').to_html()
@@ -41,10 +43,11 @@ def addresses():
 
 @app.route('/credentials', methods=['GET']) 
 def credentials():
-    db = requests.get('http://credentials:5002/accounts_database') #.json()
-    #df = pd.DataFrame.from_dict(db,orient='index')
-    return db.content #df.to_html()
-
+    db = requests.get('http://credentials:5002/accounts_database')
+    try:
+        return pd.DataFrame.from_dict(db.json()).to_html() #db.json() #pd.DataFrame.from_dict(db,orient='index').to_html()
+    except:
+        return "no data"
 
 
 # @app.route('/gateway', methods=['GET','POST']) 
