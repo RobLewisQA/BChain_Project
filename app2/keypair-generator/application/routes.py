@@ -20,4 +20,4 @@ def keys_generator():
     mnemonic = wordstr
     private_key = hashlib.sha256(mnemonic.encode()).hexdigest()
     public_key = hashlib.sha256(private_key.encode()).hexdigest()
-    return pd.DataFrame([private_key,public_key,mnemonic],index=['private_key','public_key','mnemonic']).to_json()
+    return pd.DataFrame([private_key,public_key,mnemonic],index=['private_key','public_key','mnemonic'])[0].to_json()

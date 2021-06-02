@@ -1,9 +1,8 @@
-#import WordList_Reader as words
-#import WordList_Parser as positions
 import pandas as pd
 from flask import Flask, redirect, request, url_for,render_template, Response, jsonify
 from application import app
 import requests
+import hashlib
 
 @app.route('/') 
 @app.route('/home') 
@@ -16,8 +15,12 @@ def login():
 
 @app.route('/signup', methods=['GET','POST']) 
 def signup():
-    keypair = requests.get('http://keypair-generator:5001/keys_generator').text
-    return pd.read_json(keypair).to_html()
+    keypair = requests.get('http://keypair-generator:5001/keys_generator').json()
+
+    data = {"hashed_private_key": hashlib.sha256(keypair['private_key'].encode()).hexdigest(), "public_key":keypair['private_key']}
+    requests.post('http://credentials:5002/accounts_database', json = data)
+    
+    return pd.DataFrame.from_dict(keypair,orient='index').to_html()
     #return render_template('signup.html')
 
 @app.route('/account', methods=['GET']) 
@@ -31,6 +34,18 @@ def mine():
 @app.route('/transact', methods=['GET','POST']) 
 def transact():
     return render_template('transact.html')
+
+@app.route('/addresses', methods=['GET','POST']) 
+def addresses():
+    return render_template('addresses.html')
+
+@app.route('/credentials', methods=['GET']) 
+def credentials():
+    db = requests.get('http://credentials:5002/accounts_database') #.json()
+    #df = pd.DataFrame.from_dict(db,orient='index')
+    return db.content #df.to_html()
+
+
 
 # @app.route('/gateway', methods=['GET','POST']) 
 # def gateway():

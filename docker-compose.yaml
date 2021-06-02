@@ -20,6 +20,15 @@ services:
       published: 5001
       protocol: tcp
 
+  credentials:
+    container_name: credentials
+    image: roblewisqa/credentials:latest
+    build: ./app2/credentials
+    ports:
+    - target: 5002
+      published: 5002
+      protocol: tcp
+
   nginx:
     image: nginx:latest
     ports:
