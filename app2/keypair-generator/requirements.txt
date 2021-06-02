@@ -1,7 +1,4 @@
 Flask
-Flask-SQLAlchemy
-SQLAlchemy
-pymysql
 pandas
 flask-testing
 pytest
