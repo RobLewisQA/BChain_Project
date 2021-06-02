@@ -1,0 +1,86 @@
+version: "3.8"
+
+# creating a docker container for back-end with image referencing Docker Hub 
+services:
+  Seedphrase_Generator:
+    container_name: seedphrase_generator
+    image: roblewisqa/seedphrase_generator:latest
+    build: ./app/Seedphrase_Generator
+    ports:
+    - target: 5000
+      published: 5000
+      protocol: tcp
+# creating a docker container for random_numbers with image referencing Docker Hub       
+  WordList_Reader:
+    container_name: wordlist_reader
+    image: roblewisqa/wordlist_reader:latest
+    build: ./app/WordList_Reader
+    ports:
+    - target: 5001
+      published: 5001
+      protocol: tcp
+
+  Wordlist_Parser:
+    container_name: wordlist_parser
+    image: roblewisqa/wordlist_parser:latest
+    build: ./app/WordList_Parser
+    ports:
+    - target: 5002
+      published: 5002
+      protocol: tcp
+
+  Password_Generator:
+    container_name: password_generator
+    image: roblewisqa/password_generator:latest
+    build: ./app/Password_Generator
+    ports:
+    - target: 5003
+      published: 5003
+      protocol: tcp
+  
+  Username_Generator:
+    container_name: username_generator
+    image: roblewisqa/username_generator:latest
+    build: ./app/Username_Generator
+    ports:
+    - target: 5004
+      published: 5004
+      protocol: tcp
+      
+  Database:
+    container_name: database
+    image: roblewisqa/database:latest
+    build: ./app/Database
+    ports:
+    - target: 5006
+      published: 5006
+      protocol: tcp
+  
+  Pandas_jsonReader:
+    container_name: pandas_jsonreader
+    image: roblewisqa/pandas_jsonreader:latest
+    build: ./app/Pandas_jsonReader
+    ports:
+    - target: 5005
+      published: 5005
+      protocol: tcp
+
+  Login_Frontend:
+    container_name: login_frontend
+    image: roblewisqa/login_frontend:latest
+    build: ./app/Login_Frontend
+    ports:
+    - target: 5007
+      published: 5007
+      protocol: tcp  
+
+  nginx:
+    image: nginx:latest
+    ports:
+    - target: 80
+      published: 80
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: ./app/nginx/nginx.conf
+      target: /etc/nginx/nginx.conf
