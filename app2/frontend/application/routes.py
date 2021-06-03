@@ -29,17 +29,32 @@ def signup():
 def account():
     return render_template('account.html')
 
-@app.route('/mine', methods=['GET','POST']) 
+@app.route('/mine', methods=['GET']) 
 def mine():
-    return render_template('mine.html')
+    response = requests.get('http://blockchain-engine:5003/mine_block')
+    return response.text # render_template('mine.html')
+
+@app.route('/view_chain', methods=['GET']) 
+def view_chain():
+    response = requests.get('http://blockchain-engine:5003/get_chain').json()
+    return pd.DataFrame.from_dict(response['chain']).to_html()
+
+@app.route('/status', methods=['GET']) 
+def status():
+    response = requests.get('http://blockchain-engine:5003/valid')
+    return response.text
 
 @app.route('/transact', methods=['GET','POST']) 
 def transact():
     return render_template('transact.html')
 
-@app.route('/addresses', methods=['GET','POST']) 
+@app.route('/addresses', methods=['GET']) 
 def addresses():
-    return render_template('addresses.html')
+    db = requests.get('http://credentials:5002/accounts_database')
+    try:
+        return pd.DataFrame.from_dict(db.json())[['public_key']].to_html() #db.json() #pd.DataFrame.from_dict(db,orient='index').to_html()
+    except:
+        return "no addresses yet!"
 
 @app.route('/credentials', methods=['GET']) 
 def credentials():
