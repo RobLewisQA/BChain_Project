@@ -1,33 +1,32 @@
-#import WordList_Reader as words
-#import WordList_Parser as positions
 import pandas as pd
-#from flask import Flask, redirect, request, url_for,render_template, Response, jsonify
 from application import app
 import requests
+import datetime  
+import hashlib  
+import json 
+from flask import Flask, jsonify 
 
 ###################
 ##    GfG code   ##
 ###################
 
-# Python programm to create Blockchain
-
-import datetime  # For timestamp
-import hashlib  # Calculating the hash in order to add digital fingerprints to the blocks
-import json  # To store data in our blockchain
-from flask import Flask, jsonify # Flask is for creating the web app and jsonify is for displaying the blockchain
+# add header attribute
+# change nonce to nonce
+# add data attribute to add transactions to a block
+# change mining function
 
 class Blockchain:
 	
 	# This function is created to create the very first block and set it's hash to "0"
 	def __init__(self):
 		self.chain = []
-		self.create_block(proof=1, previous_hash='0')
+		self.create_block(nonce=1, previous_hash='0')
 
 	# This function is created to add further blocks into the chain
-	def create_block(self, proof, previous_hash):
+	def create_block(self, nonce, previous_hash):
 		block = {'index': len(self.chain) + 1,
 				'timestamp': str(datetime.datetime.now()),
-				'proof': proof,
+				'nonce': nonce,
 				'previous_hash': previous_hash}
 		self.chain.append(block)
 		return block
@@ -36,20 +35,19 @@ class Blockchain:
 	def print_previous_block(self):
 		return self.chain[-1]
 		
-	# This is the function for proof of work and used to successfully mine the block
-	def proof_of_work(self, previous_proof):
-		new_proof = 1
-		check_proof = False
-		
-		while check_proof is False:
+	# This is the function for nonce of work and used to successfully mine the block
+	def proof_of_work(self, previous_nonce):
+		new_nonce = 1
+		check_nonce = False
+
+		while check_nonce is False:
 			hash_operation = hashlib.sha256(
-				str(new_proof**2 - previous_proof**2).encode()).hexdigest()
+				(self.hash(self.chain[-1]) +str(new_nonce)).encode()).hexdigest()
 			if hash_operation[0] == '0':
-				check_proof = True
+				check_nonce = True
 			else:
-				new_proof += 1
-				
-		return new_proof
+				new_nonce += 1
+		return new_nonce
 
 	def hash(self, block):
 		encoded_block = json.dumps(block, sort_keys=True).encode()
@@ -64,10 +62,10 @@ class Blockchain:
 			if block['previous_hash'] != self.hash(previous_block):
 				return False
 				
-			previous_proof = previous_block['proof']
-			proof = block['proof']
+			previous_nonce = previous_block['nonce']
+			nonce = block['nonce']
 			hash_operation = hashlib.sha256(
-				str(proof**2 - previous_proof**2).encode()).hexdigest()
+				(self.hash(self.chain[-1]) +str(new_nonce)).encode()).hexdigest()
 			
 			if hash_operation[0] != '0':
 				return False
@@ -84,15 +82,15 @@ blockchain = Blockchain()
 @app.route('/mine_block', methods=['GET'])
 def mine_block():
 	previous_block = blockchain.print_previous_block()
-	previous_proof = previous_block['proof']
-	proof = blockchain.proof_of_work(previous_proof)
+	previous_nonce = previous_block['nonce']
+	nonce = blockchain.proof_of_work(previous_nonce)
 	previous_hash = blockchain.hash(previous_block)
-	block = blockchain.create_block(proof, previous_hash)
+	block = blockchain.create_block(nonce, previous_hash)
 	
 	response = {'message': 'A block is MINED',
 				'index': block['index'],
 				'timestamp': block['timestamp'],
-				'proof': block['proof'],
+				'nonce': block['nonce'],
 				'previous_hash': block['previous_hash']}
 	
 	return jsonify(response), 200
