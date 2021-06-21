@@ -29,6 +29,15 @@ services:
       published: 5002
       protocol: tcp
 
+  blockchain-engine:
+    container_name: blockchain-engine
+    image: roblewisqa/blockchain-engine:latest
+    build: ./app2/blockchain-engine
+    ports:
+    - target: 5003
+      published: 5003
+      protocol: tcp
+
   nginx:
     image: nginx:latest
     ports:
