@@ -6,11 +6,11 @@ import hashlib
 import json
 
 
-class Users:
-    def __init__(self, alias, private_key, public_key):
-        self.alias = alias
-        self.private_key = private_key
-        self.public_key = public_key
+# class Users:
+#     def __init__(self, alias, private_key, public_key):
+#         self.alias = alias
+#         self.private_key = private_key
+#         self.public_key = public_key
 
 # main = Blueprint('main', __name__)
 # auth = Blueprint('auth', __name__)
@@ -22,13 +22,13 @@ class Users:
 def home():
     return render_template('homepage.html')+('<br><br> <a href="/signup_home" type="button">Create an account</a> </br>')
 
-@app.before_request
-def before_request():
-    if 'alias' in session:
-        accounts = requests.get('http://credentials:5002/accounts_database').json()
-        accounts_df = pd.DataFrame.from_dict(creds,orient='index').T
-        user = [x for x in accounts_df[-1] if x == session['alias']][0]
-        g.user = user
+# @app.before_request
+# def before_request():
+#     if 'alias' in session:
+#         accounts = requests.get('http://credentials:5002/accounts_database').json()
+#         accounts_df = pd.DataFrame.from_dict(creds,orient='index').T
+#         user = [x for x in accounts_df[-1] if x == session['alias']][0]
+#         g.user = user
 
 @app.route('/login', methods=['GET','POST']) 
 def login():
@@ -36,9 +36,9 @@ def login():
         return render_template('login.html')
     
     elif request.method == 'POST':
-        session.pop('alias', None)
+        # session.pop('alias', None)
         creds = requests.get('http://credentials:5002/accounts_database').json()
-        if creds == {}:
+        #if creds == {}:
             
         current_data = pd.DataFrame.from_dict(creds,orient='index').T
         #data = {"private_key": keypair['private_key'], "public_key":keypair['public_key'],"alias":request.form['alias']}
