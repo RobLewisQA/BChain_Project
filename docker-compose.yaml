@@ -4,7 +4,7 @@ version: "3.8"
 services:
   frontend:
     container_name: frontend
-    image: roblewisqa/frontend:latest
+    #image: roblewisqa/frontend:latest
     build: ./app2/frontend
     ports:
     - target: 5000
@@ -13,7 +13,7 @@ services:
 
   keypair-generator:
     container_name: keypair-generator
-    image: roblewisqa/keypair-generator:latest
+    #image: roblewisqa/keypair-generator:latest
     build: ./app2/keypair-generator
     ports:
     - target: 5001
@@ -22,7 +22,7 @@ services:
 
   credentials:
     container_name: credentials
-    image: roblewisqa/credentials:latest
+    #image: roblewisqa/credentials:latest
     build: ./app2/credentials
     ports:
     - target: 5002
@@ -31,7 +31,7 @@ services:
 
   blockchain-engine:
     container_name: blockchain-engine
-    image: roblewisqa/blockchain-engine:latest
+    #image: roblewisqa/blockchain-engine:latest
     build: ./app2/blockchain-engine
     ports:
     - target: 5003

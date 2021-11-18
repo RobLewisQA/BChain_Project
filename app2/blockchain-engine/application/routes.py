@@ -1,4 +1,4 @@
-import pandas as pd
+#import pandas as pd
 from application import app
 import requests
 import datetime  
