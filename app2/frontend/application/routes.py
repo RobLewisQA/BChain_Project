@@ -1,20 +1,81 @@
 import pandas as pd
-from flask import Flask, redirect, request, url_for,render_template, Response, jsonify
+from flask import Flask, redirect, request, url_for,render_template, Response, jsonify, Blueprint, session, g
 from application import app
 import requests
 import hashlib
 import json
+
+
+# class Users:
+#     def __init__(self, alias, private_key, public_key):
+#         self.alias = alias
+#         self.private_key = private_key
+#         self.public_key = public_key
+
+# main = Blueprint('main', __name__)
+# auth = Blueprint('auth', __name__)
+
+
 
 @app.route('/') 
 @app.route('/home') 
 def home():
     return render_template('homepage.html')+('<br><br> <a href="/signup_home" type="button">Create an account</a> </br>')
 
+# @app.before_request
+# def before_request():
+#     if 'alias' in session:
+#         accounts = requests.get('http://credentials:5002/accounts_database').json()
+#         accounts_df = pd.DataFrame.from_dict(creds,orient='index').T
+#         user = [x for x in accounts_df[-1] if x == session['alias']][0]
+#         g.user = user
 
 @app.route('/login', methods=['GET','POST']) 
 def login():
-    return render_template('login.html')
+    if request.method == 'GET':
+        return render_template('login.html')
+    
+    elif request.method == 'POST':
+        # session.pop('alias', None)
+        creds = requests.get('http://credentials:5002/accounts_database').json()
+        #if creds == {}:
+            
+        current_data = pd.DataFrame.from_dict(creds,orient='index').T
+        #data = {"private_key": keypair['private_key'], "public_key":keypair['public_key'],"alias":request.form['alias']}
 
+        privkey = hashlib.sha256((request.form['mnemonic']).encode()).hexdigest()
+
+        try:
+            if request.form['alias'] in current_data.alias.to_list():
+                if hashlib.sha256((request.form['mnemonic']).encode()).hexdigest() == current_data.loc[current_data.alias == request.form['alias']].private_key.max():
+                    session['alias'] = request.form['alias']
+                    return redirect(url_for('account'))
+                else:
+                    return 'incorrect alias/mnemonic pair'
+            else:
+                return 'alias not known'
+        except:
+            return "oops, that didn't work!"
+
+
+
+
+
+    #     if len(current_data) == 0:
+    #         # data = {"private_key": keypair['private_key'], "public_key":keypair['public_key'],"alias":request.form['alias']}
+    #         requests.post('http://credentials:5002/accounts_database', json = data)
+    #         data.update({"mnemonic": keypair['mnemonic']})
+    #         return pd.DataFrame.from_dict(data,orient='index').to_html()
+    #     else:
+    #         if (keypair['public_key'] in current_data.T.public_key.to_list()) | (keypair['private_key'] in current_data.T.private_key.to_list()) | (request.form['alias'] in current_data.T.alias.to_list()):
+    #             return 'Sorry, your credentials need to be unique! Try again '+ ('<a href="/signup_home" type="button">here</a> </p>')
+    #         else:
+    #             # data = {"private_key": keypair['private_key'], "public_key":keypair['public_key'],"alias":request.form['alias']}
+    #             requests.post('http://credentials:5002/accounts_database', json = data)
+    #             data.update({"mnemonic": keypair['mnemonic']})
+    #             return pd.DataFrame.from_dict(data,orient='index').to_html()
+    # else:
+    #     return
 
 @app.route('/signup_home', methods=['GET','POST']) 
 def signup_home():
@@ -48,6 +109,7 @@ def signup():
 
 
 @app.route('/account', methods=['GET']) 
+#@login_required
 def account():
     return render_template('account.html')
 

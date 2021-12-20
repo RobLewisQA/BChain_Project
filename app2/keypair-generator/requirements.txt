@@ -1,5 +1,4 @@
 Flask
-pandas
 flask-testing
 pytest
 pytest-cov
