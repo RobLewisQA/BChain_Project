@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seedphrase-generator
+  labels:
+    app: seedphrase-generator
+
+spec:
+  selector:
+    matchLabels:
+      app: seedphrase-generator
+  replicas: 1
+
+  template:
+    metadata:
+      name: seedphrase-generator
+      labels:
+        app: seedphrase-generator
+    spec:
+      containers:
+      - name: seedphrase-generator
+        image: roblewisqa/seedphrase_generator:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: seedphrase-generator
+spec:
+  selector:
+    app: seedphrase-generator
+  ports:
+  - port: 5000
+    targetPort: 5000
+    protocol: TCP
+  type: ClusterIP

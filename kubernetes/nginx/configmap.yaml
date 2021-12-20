@@ -7,27 +7,15 @@ data:
     server {
       listen 80;
       location / {
-        proxy_pass http://WordList_Reader:5001;
+        proxy_pass http://frontend:5000;
       }
       location / {
-        proxy_pass http://WordList_Parser:5002;
+        proxy_pass http://keypair-generator:5001;
       }
       location / {
-        proxy_pass http://Username_Generator:5003;
+        proxy_pass http://credentials:5002;
       }
       location / {
-        proxy_pass http://Password_Generator:5004;
-      }
-      location / {
-        proxy_pass http://Seedphrase_Generator:5000;
-      }
-      location / {
-        proxy_pass http://Pandas_jsonReader:5005;
-      }
-            location / {
-        proxy_pass http://Database:5006;
-      }
-            location / {
-        proxy_pass http://Login_Frontend:5007;
+        proxy_pass http://blockchain-engine:5003;
       }
     }
