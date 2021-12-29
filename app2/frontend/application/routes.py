@@ -47,13 +47,13 @@ def login():
         creds = requests.get('http://credentials:5002/accounts_database').json()
         current_data = pd.DataFrame.from_dict(creds,orient='index').T
         #data = {"private_key": keypair['private_key'], "public_key":keypair['public_key'],"alias":request.form['alias']}
-        privkey = hashlib.sha256((request.form['mnemonic']).encode()).hexdigest()
+        # privkey = hashlib.sha256((request.form['mnemonic']).encode()).hexdigest()
 
         try:
             if request.form['alias'] in current_data.alias.to_list():
-                if hashlib.sha256((request.form['mnemonic']).encode()).hexdigest() == current_data.loc[current_data.alias == request.form['alias']].private_key.max():
-                    session['alias'] = request.form['alias']
-                    return redirect(url_for('account'))
+                # seedphrase_hash(seedphrase,alias)[1]
+                if seedphrase_hash(request.form['mnemonic'], request.form['alias'])[1] == current_data.loc[current_data.alias == request.form['alias']].private_key.max():
+                    return "you're in" # redirect(url_for('account'))
                 else:
                     return 'incorrect alias/mnemonic pair'
             else:
