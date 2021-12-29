@@ -6,29 +6,37 @@ import hashlib
 import json
 
 
-# class Users:
-#     def __init__(self, alias, private_key, public_key):
-#         self.alias = alias
-#         self.private_key = private_key
-#         self.public_key = public_key
+def seedphrase_hash(seedphrase,username):
+    hash_val = hashlib.sha256(str(seedphrase).encode()).hexdigest()
+    for n in range(10):
+        if n != 4:
+            if n > 1:
+                hash_val = hashlib.sha256(str(hash_val).encode()).hexdigest()
+            else: 
+                hash_val = hashlib.sha256(str(hash_val).encode()).hexdigest()
+                username_hash = hashlib.sha256(str(username).encode()).hexdigest()
+        else:
+            hash_val = hashlib.sha256(str(hash_val).encode()).hexdigest()
+            password_val = hash_val
+    return '!0!0!' + hash_val + username_hash[5], password_val
 
-# main = Blueprint('main', __name__)
-# auth = Blueprint('auth', __name__)
 
+def password_hash(password,username):
+    hashing_val = hashlib.sha256(str(password).encode()).hexdigest()
+    for n in range(4):
+        if n > 1:
+            hashing_val = hashlib.sha256(str(hashing_val).encode()).hexdigest()
+        else: 
+            hashing_val = hashlib.sha256(str(hashing_val).encode()).hexdigest()
+            username_hashing = hashlib.sha256(str(username).encode()).hexdigest()
+    return '!0!0!' + hashing_val + username_hashing[5]
 
 
 @app.route('/') 
 @app.route('/home') 
 def home():
-    return render_template('homepage.html')+('<br><br> <a href="/signup_home" type="button">Create an account</a> </br>')
+    return render_template('homepage.html')+('<br><br> <a href="/signup" type="button">Create an account</a> </br>')
 
-# @app.before_request
-# def before_request():
-#     if 'alias' in session:
-#         accounts = requests.get('http://credentials:5002/accounts_database').json()
-#         accounts_df = pd.DataFrame.from_dict(creds,orient='index').T
-#         user = [x for x in accounts_df[-1] if x == session['alias']][0]
-#         g.user = user
 
 @app.route('/login', methods=['GET','POST']) 
 def login():
@@ -36,20 +44,16 @@ def login():
         return render_template('login.html')
     
     elif request.method == 'POST':
-        # session.pop('alias', None)
         creds = requests.get('http://credentials:5002/accounts_database').json()
-        #if creds == {}:
-            
         current_data = pd.DataFrame.from_dict(creds,orient='index').T
         #data = {"private_key": keypair['private_key'], "public_key":keypair['public_key'],"alias":request.form['alias']}
-
-        privkey = hashlib.sha256((request.form['mnemonic']).encode()).hexdigest()
+        # privkey = hashlib.sha256((request.form['mnemonic']).encode()).hexdigest()
 
         try:
             if request.form['alias'] in current_data.alias.to_list():
-                if hashlib.sha256((request.form['mnemonic']).encode()).hexdigest() == current_data.loc[current_data.alias == request.form['alias']].private_key.max():
-                    session['alias'] = request.form['alias']
-                    return redirect(url_for('account'))
+                # seedphrase_hash(seedphrase,alias)[1]
+                if seedphrase_hash(request.form['mnemonic'], request.form['alias'])[1] == current_data.loc[current_data.alias == request.form['alias']].private_key.max():
+                    return "you're in" # redirect(url_for('account'))
                 else:
                     return 'incorrect alias/mnemonic pair'
             else:
@@ -57,55 +61,39 @@ def login():
         except:
             return "oops, that didn't work!"
 
-
-
-
-
-    #     if len(current_data) == 0:
-    #         # data = {"private_key": keypair['private_key'], "public_key":keypair['public_key'],"alias":request.form['alias']}
-    #         requests.post('http://credentials:5002/accounts_database', json = data)
-    #         data.update({"mnemonic": keypair['mnemonic']})
-    #         return pd.DataFrame.from_dict(data,orient='index').to_html()
-    #     else:
-    #         if (keypair['public_key'] in current_data.T.public_key.to_list()) | (keypair['private_key'] in current_data.T.private_key.to_list()) | (request.form['alias'] in current_data.T.alias.to_list()):
-    #             return 'Sorry, your credentials need to be unique! Try again '+ ('<a href="/signup_home" type="button">here</a> </p>')
-    #         else:
-    #             # data = {"private_key": keypair['private_key'], "public_key":keypair['public_key'],"alias":request.form['alias']}
-    #             requests.post('http://credentials:5002/accounts_database', json = data)
-    #             data.update({"mnemonic": keypair['mnemonic']})
-    #             return pd.DataFrame.from_dict(data,orient='index').to_html()
-    # else:
-    #     return
-
-@app.route('/signup_home', methods=['GET','POST']) 
-def signup_home():
-    return '<h1>Create a new BChain account</h1><br>'+ render_template('signup.html')#,title='add_item')#+('<br><br> <a href="/products" type="button">Return to Products home</a> </br>')
-
-
+    
 @app.route('/signup', methods=['GET','POST']) 
 def signup():
     if request.method == 'POST':
-
-        keypair = requests.get('http://keypair-generator:5001/keys_generator').json()
+        alias = request.form['alias']
         creds = requests.get('http://credentials:5002/accounts_database').json()
         current_data = pd.DataFrame.from_dict(creds,orient='index')
-        data = {"private_key": keypair['private_key'], "public_key":keypair['public_key'],"alias":request.form['alias']}
-        
+
         if len(current_data) == 0:
-            # data = {"private_key": keypair['private_key'], "public_key":keypair['public_key'],"alias":request.form['alias']}
-            requests.post('http://credentials:5002/accounts_database', json = data)
-            data.update({"mnemonic": keypair['mnemonic']})
+            keypair = requests.get('http://keypair-generator:5001/keys_handler?alias='+ alias).json()
+            privateKey = keypair['private_key']
+            publicKey = keypair['public_key']
+            seedphrase = keypair['seedphrase']
+
+            data = {"private_key":privateKey, "public_key":publicKey, "alias":alias, "seedphrase":seedphrase}
             return pd.DataFrame.from_dict(data,orient='index').to_html()
         else:
-            if (keypair['public_key'] in current_data.T.public_key.to_list()) | (keypair['private_key'] in current_data.T.private_key.to_list()) | (request.form['alias'] in current_data.T.alias.to_list()):
-                return 'Sorry, your credentials need to be unique! Try again '+ ('<a href="/signup_home" type="button">here</a> </p>')
+            if request.form['alias'] in current_data.T.alias.to_list():
+                return 'Sorry, your credentials need to be unique! Try again '+ ('<a href="/signup" type="button">here</a> </p>')
             else:
+                keypair = requests.get('http://keypair-generator:5001/keys_handler?alias='+ alias).json()
+                privateKey = keypair['private_key']
+                publicKey = keypair['public_key']
+                seedphrase = keypair['seedphrase']
+
+                data = {"private_key":privateKey, "public_key":publicKey, "alias":alias, "seedphrase":seedphrase}
                 # data = {"private_key": keypair['private_key'], "public_key":keypair['public_key'],"alias":request.form['alias']}
-                requests.post('http://credentials:5002/accounts_database', json = data)
-                data.update({"mnemonic": keypair['mnemonic']})
+                # requests.post('http://credentials:5002/accounts_database', json = data)
+                # data.update({"mnemonic": keypair['mnemonic']})
                 return pd.DataFrame.from_dict(data,orient='index').to_html()
-    else:
-        return '<p>Looks like you forgot to add an alias. Try again ' + ('<a href="/signup_home" type="button">here</a> </p>')
+    elif request.method == 'GET':
+        return '<h1>Create a new BChain account</h1><br>'+ render_template('signup.html')
+        #'<p>Looks like you forgot to add an alias. Try again ' + ('<a href="/signup_home" type="button">here</a> </p>')
 
 
 @app.route('/account', methods=['GET']) 
@@ -155,6 +143,27 @@ def credentials():
         return "no data"
 
 
+
+
+
+
+
+#######################################
+################ test #################
+#######################################
+
+# class Users:
+#     def __init__(self, alias, private_key, public_key):
+#         self.alias = alias
+#         self.private_key = private_key
+#         self.public_key = public_key
+
+# main = Blueprint('main', __name__)
+# auth = Blueprint('auth', __name__)
+
+#########################################
+#########################################
+
 # @app.route('/gateway', methods=['GET','POST']) 
 # def gateway():
 #     if request.method == 'POST':
@@ -169,6 +178,34 @@ def credentials():
 #                 return "Oops, that password wasn't correct" 
 #         else:
 #             return "Oops, there's no user with that username"
-    
 
+##########################################
+##########################################
+
+#     if len(current_data) == 0:
+#         # data = {"private_key": keypair['private_key'], "public_key":keypair['public_key'],"alias":request.form['alias']}
+#         requests.post('http://credentials:5002/accounts_database', json = data)
+#         data.update({"mnemonic": keypair['mnemonic']})
+#         return pd.DataFrame.from_dict(data,orient='index').to_html()
+#     else:
+#         if (keypair['public_key'] in current_data.T.public_key.to_list()) | (keypair['private_key'] in current_data.T.private_key.to_list()) | (request.form['alias'] in current_data.T.alias.to_list()):
+#             return 'Sorry, your credentials need to be unique! Try again '+ ('<a href="/signup_home" type="button">here</a> </p>')
+#         else:
+#             # data = {"private_key": keypair['private_key'], "public_key":keypair['public_key'],"alias":request.form['alias']}
+#             requests.post('http://credentials:5002/accounts_database', json = data)
+#             data.update({"mnemonic": keypair['mnemonic']})
+#             return pd.DataFrame.from_dict(data,orient='index').to_html()
+# else:
+#     return
+
+##########################################
+##########################################
+
+# @app.before_request
+# def before_request():
+#     if 'alias' in session:
+#         accounts = requests.get('http://credentials:5002/accounts_database').json()
+#         accounts_df = pd.DataFrame.from_dict(creds,orient='index').T
+#         user = [x for x in accounts_df[-1] if x == session['alias']][0]
+#         g.user = user
 

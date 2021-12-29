@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordlist-parser
+  labels:
+    app: wordlist-parser
+
+spec:
+  selector:
+    matchLabels:
+      app: wordlist-parser
+  replicas: 1
+
+  template:
+    metadata:
+      name: wordlist-parser
+      labels:
+        app: wordlist-parser
+    spec:
+      containers:
+      - name: wordlist-parser
+        image: roblewisqa/wordlist_parser:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5002
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordlist-parser
+spec:
+  selector:
+    app: wordlist-parser
+  ports:
+  - port: 5002
+    targetPort: 5002
+    protocol: TCP
+  type: ClusterIP

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: username-generator
+  labels:
+    app: username-generator
+
+spec:
+  selector:
+    matchLabels:
+      app: username-generator
+  replicas: 1
+
+  template:
+    metadata:
+      name: username-generator
+      labels:
+        app: username-generator
+    spec:
+      containers:
+      - name: username-generator
+        image: roblewisqa/username_generator:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5004
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: username-generator
+spec:
+  selector:
+    app: username-generator
+  ports:
+  - port: 5004
+    targetPort: 5004
+    protocol: TCP
+  type: ClusterIP

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keypair-generator
+  labels:
+    app: keypair-generator
+
+spec:
+  selector:
+    matchLabels:
+      app: keypair-generator
+  replicas: 1
+
+  template:
+    metadata:
+      name: keypair-generator
+      labels:
+        app: keypair-generator
+    spec:
+      containers:
+      - name: keypair-generator
+        image: roblewisqa/keypair_generator:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5001
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keypair-generator
+spec:
+  selector:
+    app: keypair-generator
+  ports:
+  - port: 5001
+    targetPort: 5001
+    protocol: TCP
+  type: ClusterIP
